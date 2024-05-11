@@ -1,5 +1,5 @@
 #include <iostream>
-#include <ncurses.h>
+#include <curses.h>
 #include "Map.h"
 
 using namespace std;
