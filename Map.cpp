@@ -1,13 +1,13 @@
 #include <iostream>
 #include <curses.h>
 #include <string>
+#include "Map.h"
 
 using namespace std;
 
-int** map;
-
-void create_map(int map_size){
+Map::Map(int map_size){
     if(map_size%2==0) map_size++;
+    this->map_size=map_size;
 
     map=new int*[map_size];
     for(int i=0; i<map_size; i++) map[i]=new int[map_size];
@@ -19,15 +19,25 @@ void create_map(int map_size){
     }
 }
 
-void delete_map(int map_size=21){
-    if(map_size%2==0) map_size++;
-
+Map::~Map(){
     for(int i=0; i<map_size; i++) delete[] map[i];
     delete[] map;
 }
 
-void map_to_string(string &map_string, int map_size=21){
-    if(map_size%2==0) map_size++;
+void Map::display_map(){
+    // newwin(height, width, y, x); x y 좌표에 window 생성
+    WINDOW *win=newwin(map_size,map_size,0,0); // 윈도우 생성    
+    string map_string;
+    this->map_to_string(map_string);
+
+    wprintw(win, map_string.c_str()); // 생성한 윈도우에 문자열 출력 가능
+
+    refresh(); // 일반 새로고침 후 
+    wrefresh(win); // 윈도우 새로고침
+    getch(); // 키보드 입력이 있어야 다음으로 진행됨.
+}
+
+void Map::map_to_string(string &map_string){
     int check;
     for (int i = 0; i < map_size; i++){
         for (int j = 0; j < map_size; j++){
@@ -38,17 +48,11 @@ void map_to_string(string &map_string, int map_size=21){
     }
 }
 
-void display_map(int map_size=21){
-    if(map_size%2==0) map_size++;
-
-    // newwin(height, width, x, y); x y 좌표에 window 생성
-    WINDOW *win=newwin(map_size,map_size,0,0); // 윈도우 생성    
-    string map_string;
-    map_to_string(map_string,map_size);
-
-    wprintw(win, map_string.c_str()); // 생성한 윈도우에 문자열 출력 가능
+void Map::debug_print(string &debug_str){
+    WINDOW *temp=newwin(1,100,map_size,0);
+    wprintw(temp, debug_str.c_str());
 
     refresh(); // 일반 새로고침 후 
-    wrefresh(win); // 윈도우 새로고침
-    getch();
+    wrefresh(temp); // 윈도우 새로고침
+    getch(); // 키보드 입력이 있어야 다음으로 진행됨.
 }
