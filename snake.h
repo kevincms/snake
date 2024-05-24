@@ -1,19 +1,15 @@
 #include <vector>
 #include <curses.h>
-#include <Windows.h> // Áö¿¬´É À§ÇÑ Çì´õÆÄÀÏ
+#include <Windows.h> // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#include "map.h"
 
 using namespace std;
 
-struct Position // ÁÂÇ¥ ÀúÀå ±¸Á¶Ã¼
-{
-    int x, y;
-};
-
 class Snake {
 private:
-    Position prev; // ²¿¸®°¡ ÀÌµ¿Àü ÀÖ¾ú´ø ÁÂÇ¥
-    char direction; // ¹æÇâ
-    int cnt_growth{ 0 }, cnt_poison{ 0 }, cnt_gate{ 0 };
+    Position prev; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥
+    char direction; // ï¿½ï¿½ï¿½ï¿½
+    int cnt_growth{0}, cnt_poison{0}, cnt_gate{0};
 public:
     vector <Position> snake_body;
     Snake();
