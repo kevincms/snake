@@ -6,6 +6,11 @@ struct Position{
     int x, y;
 };
 
+struct Gate_Position:Position{
+    bool u{false}, d{false}, r{false}, l{false};
+    bool gate_d[4]={0,};
+};
+
 class Map
 {
 private:
