@@ -13,7 +13,7 @@ Snake::Snake() {
     cnt_poison = 0;
     cnt_gate = 0;
     prev = { 0, 0 };
-    snake_body = { {1,2}, {2,3}, {3,4} };
+    snake_body = { {11,11}, {10,11}, {9,11} };
     direction = 'r'; // default direction
 }
 
@@ -82,7 +82,7 @@ void Snake::eat_poison(const Position item) // �� ������ ���
     }
 }
 
-bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // ����Ʈ ��������� �Ǻ� + �̵�
+bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // ����Ʈ ���������? �Ǻ� + �̵�
 {
     bool in_gate1{ false }, in_gate2{ false };
 
