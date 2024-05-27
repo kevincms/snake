@@ -5,6 +5,8 @@ using namespace std;
 
 #ifndef _CODE_
 #define _CODE_
+class Snake;
+
 struct Position{
     int x, y;
 };
@@ -28,7 +30,8 @@ public:
     ~Map();
     void display_map();
     void display_map2();
-
+    
+    void snake_to_map(Snake &snake);
     Position create_grow_item();
     Position create_poison_item();
     Position create_gate();

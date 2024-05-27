@@ -3,12 +3,14 @@
 #include <random>
 #include <vector>
 #include "Map.h"
+#include "snake.h"
 
 using namespace std;
 
 Map::Map(int map_size){
     // 0 : 빈공간, 1 : 벽, 2 끼인 벽, 
     // 10 : grow_item, 11 : poison_item, 12 : gate
+    // 20: snake 머리, 21 : snake 몸
     if(map_size%2==0) map_size++;
     this->map_size=map_size;
 
@@ -59,6 +61,18 @@ void Map::display_map2(){
         cout<<endl;
     }
     
+}
+
+void Map::snake_to_map(Snake &snake){
+    // 20: snake 머리, 21 : snake 몸
+    int body_len=snake.snake_body.size();
+    Position temp;
+    temp=snake.snake_body[0];
+    map[temp.y][temp.x]=20;
+    for (size_t i = 1; i < body_len; i++){
+        temp=snake.snake_body[i];
+        map[temp.y][temp.x]=21;
+    }   
 }
 
 Position Map::create_grow_item(){
