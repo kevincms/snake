@@ -1,7 +1,8 @@
 #include <vector>
 #include <curses.h>
 #include <iostream>
-#include <Windows.h> // for delay
+#include <chrono>
+#include <thread>
 #include "snake.h"
 
 using namespace std;
@@ -18,21 +19,27 @@ Snake::Snake() {
 
 void Snake::set_direction() // set direction from keyboard
 {
-    Sleep(5000);
-    int ch = getch();
-    switch (ch) {
-    case KEY_LEFT:
-        direction = 'l';
-        break;
-    case KEY_RIGHT:
-        direction = 'r';
-        break;
-    case KEY_UP:
-        direction = 'u';
-        break;
-    case KEY_DOWN:
-        direction = 'd';
-        break;
+    while (true) {
+        static const auto tickDuration = std::chrono::milliseconds(1000);
+
+        std::this_thread::sleep_for(tickDuration);
+
+        int ch = getch();
+        if (ch == ERR) break;
+        switch (ch) {
+        case KEY_LEFT:
+            direction = 'l';
+            break;
+        case KEY_RIGHT:
+            direction = 'r';
+            break;
+        case KEY_UP:
+            direction = 'u';
+            break;
+        case KEY_DOWN:
+            direction = 'd';
+            break;
+        }
     }
 }
 
