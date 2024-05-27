@@ -3,8 +3,8 @@
 using namespace std;
 
 
-#ifndef _CODE_
-#define _CODE_
+#ifndef _CODE_Map_
+#define _CODE_Map_
 class Snake;
 
 struct Position{

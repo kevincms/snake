@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include "Map.h"
+#include "Gamemanger.h"
 
 using namespace std;
 
@@ -12,9 +13,13 @@ private:
     char direction; // ����
     int cnt_growth, cnt_poison, cnt_gate;
 public:
+    bool quit=false;
     vector <Position> snake_body;
     Snake();
-    void set_direction();
+
+    // void set_direction();
+    void set_direction(Map &Map, Snake &snake, Gamemanger &GM);
+
     void move();
     void eat_growth(const Position item);
     void eat_poison(const Position item);

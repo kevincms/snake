@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "Gamemanger.h"
+#include "snake.h"
 
 using namespace std;
 
@@ -106,7 +107,21 @@ void Gamemanger::display(Map &Map){
     check_misson();
     display_misssion(Map);
     
-    
+}
+
+void Gamemanger::display_debug(Map &Map, Snake &snake, bool check, string test_string){
+    // newwin(height, width, y, x); x y 좌표에 window 생성
+    WINDOW *win=newwin(1,Map.map_size,Map.map_size+1,0);
+    string debug_string;
+    Position temp;
+    temp=snake.snake_body[0];
+    debug_string=to_string(temp.x)+" "+to_string(temp.y);
+
+    if(check) wprintw(win, test_string.c_str());
+    else wprintw(win, debug_string.c_str());
+
+    refresh(); // 일반 새로고침 후 
+    wrefresh(win); // 윈도우 새로고침
 }
 
 void Gamemanger::display_map(Map &Map){
