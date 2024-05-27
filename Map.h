@@ -2,6 +2,9 @@
 #include <random>
 using namespace std;
 
+
+#ifndef _CODE_
+#define _CODE_
 struct Position{
     int x, y;
 };
@@ -25,8 +28,6 @@ public:
     ~Map();
     void display_map();
     void display_map2();
-    void map_to_string(string &map_string);
-    void debug_print(string &debug_str);
 
     Position create_grow_item();
     Position create_poison_item();
@@ -34,3 +35,4 @@ public:
     bool check_map_Pos(int x, int y);
     Gate_Position find_gate_direction(Gate_Position gate);
 };
+#endif

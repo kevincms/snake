@@ -1,7 +1,7 @@
 #include <iostream>
 #include <curses.h>
-#include <string>
 #include <random>
+#include <vector>
 #include "Map.h"
 
 using namespace std;
@@ -35,10 +35,16 @@ Map::~Map(){
 void Map::display_map(){
     // newwin(height, width, y, x); x y 좌표에 window 생성
     WINDOW *win=newwin(map_size,map_size,0,0); // 윈도우 생성    
-    string map_string;
-    this->map_to_string(map_string);
-
-    wprintw(win, map_string.c_str()); // 생성한 윈도우에 문자열 출력 가능
+    
+    int color;
+    for (int i = 0; i < map_size; i++){
+        for (int j = 0; j < map_size; j++){
+            color=map[i][j];
+            wattron(win, COLOR_PAIR(color));
+            mvwprintw(win, j, i, " ");        
+            wattroff(win, COLOR_PAIR(color));
+        }
+    }
 
     refresh(); // 일반 새로고침 후 
     wrefresh(win); // 윈도우 새로고침
@@ -53,26 +59,6 @@ void Map::display_map2(){
         cout<<endl;
     }
     
-}
-
-void Map::map_to_string(string &map_string){
-    int check;
-    for (int i = 0; i < map_size; i++){
-        for (int j = 0; j < map_size; j++){
-            check=map[i][j];
-            if(!check) map_string.append(" ");
-            else map_string.append("#");
-        }
-    }
-}
-
-void Map::debug_print(string &debug_str){
-    WINDOW *temp=newwin(1,100,map_size,0);
-    wprintw(temp, debug_str.c_str());
-
-    refresh(); // 일반 새로고침 후 
-    wrefresh(temp); // 윈도우 새로고침
-    getch(); // 키보드 입력이 있어야 다음으로 진행됨.
 }
 
 Position Map::create_grow_item(){
@@ -108,18 +94,22 @@ Position Map::create_poison_item(){
 Position Map::create_gate(){
     int temp;
     mt19937 gen(rd());
-    uniform_int_distribution<int> dis(1, map_size-2);
-    Gate_Position gate;
-    gate.x=dis(gen);
-    gate.y=dis(gen);
-    while (map[gate.x][gate.y]!=0){
-        temp=++gate.x/map_size;
-        gate.x=(gate.x)%(map_size);
-        gate.y=(gate.y+temp)%(map_size);
+    vector<Position> gates;
+    Position temp_P;
+
+    for (int i = 0; i < map_size; i++){
+        temp_P.x=i;
+        for (int j = 0; j < map_size; j++){
+            if(map[i][j]==1){
+                temp_P.y=j;
+                gates.push_back(temp_P);
+            }
+        }
     }
-    // gate 위치에 따른 나가는 방향
-    map[gate.x][gate.y]=12;
-    return gate;
+    uniform_int_distribution<int> dis(0, gates.size()-1);
+    temp=dis(gen);
+    map[gates[temp].x][gates[temp].y]=12;
+    return gates[temp];
 }
 
 bool Map::check_map_Pos(int x, int y){
