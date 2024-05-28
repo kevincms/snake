@@ -20,14 +20,20 @@ class Snake;
 class Gamemanger
 {
 private:
-    int stage=0;
+    
 public:
+    int stage=0;
     Score_Board score_board;
     Mission_Board mission_board;
     Gamemanger();
     ~Gamemanger();
     void initial_setting();
+    void mission_by_stage(bool test=false);
+    bool is_stage_clear();
     bool is_gameover(Map &Map, Snake &snake);
+    bool is_eat_grow_item(Position grow, Snake &snake);
+    bool is_eat_poison_item(Position poison, Snake &snake);
+
     void check_misson();
     void display(Map &Map);
 

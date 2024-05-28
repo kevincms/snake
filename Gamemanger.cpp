@@ -9,44 +9,56 @@ using namespace std;
 
 Gamemanger::Gamemanger(){
     initial_setting();
-    if(stage==0){ // 스테이지 별 난이도
-        mission_board.B=4;
-        score_board.Max_len=mission_board.B;
-
-        mission_board.plus=1;
-        mission_board.minus=0;
-        mission_board.gate_count=1;
-    }
-    else if(stage==1){
-        mission_board.B=5;
-        score_board.Max_len=mission_board.B;
-
-        mission_board.plus=2;
-        mission_board.minus=0;
-        mission_board.gate_count=2;
-    }
-    else if(stage==2){
-        mission_board.B=6;
-        score_board.Max_len=mission_board.B;
-
-        mission_board.plus=4;
-        mission_board.minus=1;
-        mission_board.gate_count=3;
-    }
-    else if(stage==3){
-        mission_board.B=8;
-        score_board.Max_len=mission_board.B;
-
-        mission_board.plus=7;
-        mission_board.minus=3;
-        mission_board.gate_count=5;
-    }
-    score_board.Current_len=3;
-
+    mission_by_stage(true);
 }
 
 Gamemanger::~Gamemanger(){
     
+}
+
+void Gamemanger::mission_by_stage(bool test){
+    if(test){
+        mission_board.B=3;
+        score_board.Max_len=mission_board.B;
+        mission_board.plus=1;
+        mission_board.minus=0;
+        mission_board.gate_count=0;
+    }
+    else{
+        if(stage==0){ // 스테이지 별 난이도
+            mission_board.B=4;
+            score_board.Max_len=mission_board.B;
+            mission_board.plus=1;
+            mission_board.minus=0;
+            mission_board.gate_count=1;
+        }
+        else if(stage==1){
+            mission_board.B=5;
+            score_board.Max_len=mission_board.B;
+
+            mission_board.plus=2;
+            mission_board.minus=0;
+            mission_board.gate_count=2;
+        }
+        else if(stage==2){
+            mission_board.B=6;
+            score_board.Max_len=mission_board.B;
+
+            mission_board.plus=4;
+            mission_board.minus=1;
+            mission_board.gate_count=3;
+        }
+        else if(stage==3){
+            mission_board.B=8;
+            score_board.Max_len=mission_board.B;
+
+            mission_board.plus=7;
+            mission_board.minus=3;
+            mission_board.gate_count=5;
+        }
+    }
+    
+    score_board.Current_len=3;
 }
 
 void Gamemanger::initial_setting(){
@@ -87,15 +99,41 @@ void Gamemanger::initial_setting(){
     init_pair(21,0,21); // snake 몸
 }
 
+bool Gamemanger::is_stage_clear(){
+    if(score_board.Current_len<mission_board.B) return false;
+    if(score_board.plus<mission_board.plus) return false;
+    if(score_board.minus<mission_board.minus) return false;
+    if(score_board.gate_count<mission_board.gate_count) return false;
+    return true;
+}
+
 bool Gamemanger::is_gameover(Map &Map, Snake &snake){
     int body_len=snake.snake_body.size();
     Position head, temp;
     head=snake.snake_body[0];
+    // 0 : 빈공간, 1 : 벽, 2 끼인 벽, 
     if(Map.map[head.y][head.x]==1) return true;
     for (size_t i = 1; i < body_len; i++){
+        temp=snake.snake_body[i];
         if(temp.x==head.x && temp.y==head.y) return true;
     }
     return false;
+}
+
+bool Gamemanger::is_eat_grow_item(Position grow, Snake &snake){
+    Position head;
+    head=snake.snake_body[0];
+    // 10 : grow_item, 11 : poison_item, 12 : gate
+    if(head.y==grow.y&&head.x==grow.x) return true;
+    else return false;
+}
+
+bool Gamemanger::is_eat_poison_item(Position poison, Snake &snake){
+    Position head;
+    head=snake.snake_body[0];
+    // 10 : grow_item, 11 : poison_item, 12 : gate
+    if(head.y==poison.y&&head.x==poison.x) return true;
+    else return false;
 }
 
 void Gamemanger::check_misson(){
@@ -122,7 +160,7 @@ void Gamemanger::display(Map &Map){
 
 void Gamemanger::display_debug(Map &Map, Snake &snake, bool check, string test_string){
     // newwin(height, width, y, x); x y 좌표에 window 생성
-    WINDOW *win=newwin(1,Map.map_size,Map.map_size+1,0);
+    WINDOW *win=newwin(1,Map.map_size*2,Map.map_size+1,0);
     string debug_string;
     Position temp;
     temp=snake.snake_body[0];

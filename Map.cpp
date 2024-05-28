@@ -17,16 +17,7 @@ Map::Map(int map_size){
     map=new int*[map_size];
     for(int i=0; i<map_size; i++) map[i]=new int[map_size];
 
-    for (int i = 0; i < map_size; i++){
-        for (int j = 0; j < map_size; j++){
-            if(i==0 or i==map_size-1 or j==0 or j==map_size-1) map[i][j]=1;
-            else map[i][j]=0;
-        }
-    }
-    map[0][0]=2;
-    map[0][map_size-1]=2;
-    map[map_size-1][0]=2;
-    map[map_size-1][map_size-1]=2;
+    reset_map();
 }
 
 Map::~Map(){
@@ -34,32 +25,47 @@ Map::~Map(){
     delete[] map;
 }
 
-void Map::display_map(){
-    // newwin(height, width, y, x); x y 좌표에 window 생성
-    WINDOW *win=newwin(map_size,map_size,0,0); // 윈도우 생성    
+void Map::reset_map(int stage){
+    int wall=map_size/2+1;
+    int half=wall/2;
+    int start=wall-half-1;
+    if(stage==0){
+        for (int i = 0; i < map_size; i++){
+            for (int j = 0; j < map_size; j++){
+                if(i==0 or i==map_size-1 or j==0 or j==map_size-1) map[i][j]=1;
+                else map[i][j]=0;
+            }
+        }
+        map[0][0]=2;
+        map[0][map_size-1]=2;
+        map[map_size-1][0]=2;
+        map[map_size-1][map_size-1]=2;
+    }
+    else if(stage==1){
+        reset_map();
+        for (size_t i = 0; i < wall; i++){
+            map[start+i][wall-half-1]=1;
+        }
+    }
+    else if(stage==2){
+        reset_map(1);
+        for (size_t i = 0; i < wall; i++){
+            map[start+i][wall+half-1]=1;
+        }
+    }
+    else if(stage==3){
+        reset_map(2);
+        for (size_t i = 0; i < wall; i++){
+            map[wall-half-1][start+i]=1;
+        }
+    }
+    else if(stage==4){
+        reset_map(3);
+        for (size_t i = 0; i < wall; i++){
+            map[wall+half-1][start+i]=1;
+        }
+    }
     
-    int color;
-    for (int i = 0; i < map_size; i++){
-        for (int j = 0; j < map_size; j++){
-            color=map[i][j];
-            wattron(win, COLOR_PAIR(color));
-            mvwprintw(win, j, i, " ");        
-            wattroff(win, COLOR_PAIR(color));
-        }
-    }
-
-    refresh(); // 일반 새로고침 후 
-    wrefresh(win); // 윈도우 새로고침
-    getch(); // 키보드 입력이 있어야 다음으로 진행됨.
-}
-
-void Map::display_map2(){
-    for (size_t i = 0; i < map_size; i++){
-        for (size_t j = 0; j < map_size; j++){
-            cout<<map[i][j];
-        }
-        cout<<endl;
-    }
     
 }
 
@@ -72,7 +78,19 @@ void Map::snake_to_map(Snake &snake){
     for (size_t i = 1; i < body_len; i++){
         temp=snake.snake_body[i];
         map[temp.y][temp.x]=21;
-    }   
+    }
+}
+void Map::grow_item_to_map(Position grow){
+    // 10 : grow_item, 11 : poison_item, 12 : gate
+    map[grow.y][grow.x]=10;
+}
+void Map::poison_item_to_map(Position poison){
+    // 10 : grow_item, 11 : poison_item, 12 : gate
+    map[poison.y][poison.x]=11;
+}
+void Map::gate_to_map(Gate_Position gate){
+    // 10 : grow_item, 11 : poison_item, 12 : gate
+    map[gate.y][gate.x]=12;
 }
 
 Position Map::create_grow_item(){
@@ -87,7 +105,6 @@ Position Map::create_grow_item(){
         grow_item.x=(grow_item.x)%(map_size);
         grow_item.y=(grow_item.y+temp)%(map_size);
     }
-    map[grow_item.x][grow_item.y]=10;
     return grow_item;
 }
 Position Map::create_poison_item(){
@@ -102,14 +119,13 @@ Position Map::create_poison_item(){
         poison_item.x=(poison_item.x)%(map_size);
         poison_item.y=(poison_item.y+temp)%(map_size);
     }
-    map[poison_item.x][poison_item.y]=11;
     return poison_item;
 }
-Position Map::create_gate(){
+Gate_Position Map::create_gate(){
     int temp;
     mt19937 gen(rd());
-    vector<Position> gates;
-    Position temp_P;
+    vector<Gate_Position> gates;
+    Gate_Position temp_P;
 
     for (int i = 0; i < map_size; i++){
         temp_P.x=i;
@@ -122,7 +138,6 @@ Position Map::create_gate(){
     }
     uniform_int_distribution<int> dis(0, gates.size()-1);
     temp=dis(gen);
-    map[gates[temp].x][gates[temp].y]=12;
     return gates[temp];
 }
 
@@ -131,15 +146,25 @@ bool Map::check_map_Pos(int x, int y){
     else return false;
 }
 
+Gate_Position Map::reset_gate_direction(Gate_Position gate){
+    gate.u=false;
+    gate.d=false;
+    gate.r=false;
+    gate.l=false;
+    for (size_t i = 0; i < 4; i++) gate.gate_d[i]=false;
+    return gate;
+}
+
 Gate_Position Map::find_gate_direction(Gate_Position gate){
     // 정면
+    gate=reset_gate_direction(gate);
     if (check_map_Pos(gate.x,gate.y+1) && map[gate.x][gate.y+1]==0){
-        gate.u=true;
-        gate.gate_d[0]=true;
-    }
-    if (check_map_Pos(gate.x,gate.y-1) && map[gate.x][gate.y-1]==0){
         gate.d=true;
         gate.gate_d[1]=true;
+    }
+    if (check_map_Pos(gate.x,gate.y-1) && map[gate.x][gate.y-1]==0){
+        gate.u=true;
+        gate.gate_d[0]=true;
     }
     if (check_map_Pos(gate.x+1,gate.y) && map[gate.x+1][gate.y]==0){
         gate.r=true;

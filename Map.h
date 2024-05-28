@@ -28,14 +28,18 @@ public:
 
     Map(int map_size=21);
     ~Map();
-    void display_map();
-    void display_map2();
+    void reset_map(int stage=0);
     
     void snake_to_map(Snake &snake);
+    void grow_item_to_map(Position grow);
+    void poison_item_to_map(Position poison);
+    void gate_to_map(Gate_Position gate);
+
     Position create_grow_item();
     Position create_poison_item();
-    Position create_gate();
+    Gate_Position create_gate();
     bool check_map_Pos(int x, int y);
+    Gate_Position reset_gate_direction(Gate_Position gate);
     Gate_Position find_gate_direction(Gate_Position gate);
 };
 #endif
