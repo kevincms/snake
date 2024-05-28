@@ -54,6 +54,10 @@ void Gamemanger::initial_setting(){
     // 10 : grow_item, 11 : poison_item, 12 : gate
     // 20: snake 머리, 21 : snake 몸
 
+    raw();
+    keypad(stdscr, true);
+    noecho();
+    nodelay(stdscr, true);
     curs_set(0); // 커서 없애기
     start_color(); // 터미널 색상 사용 선언
 
@@ -83,8 +87,15 @@ void Gamemanger::initial_setting(){
     init_pair(21,0,21); // snake 몸
 }
 
-bool Gamemanger::is_gameover(Map &Map){
-
+bool Gamemanger::is_gameover(Map &Map, Snake &snake){
+    int body_len=snake.snake_body.size();
+    Position head, temp;
+    head=snake.snake_body[0];
+    if(Map.map[head.y][head.x]==1) return true;
+    for (size_t i = 1; i < body_len; i++){
+        if(temp.x==head.x && temp.y==head.y) return true;
+    }
+    return false;
 }
 
 void Gamemanger::check_misson(){

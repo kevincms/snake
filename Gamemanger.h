@@ -27,7 +27,7 @@ public:
     Gamemanger();
     ~Gamemanger();
     void initial_setting();
-    bool is_gameover(Map &Map);
+    bool is_gameover(Map &Map, Snake &snake);
     void check_misson();
     void display(Map &Map);
 

@@ -17,8 +17,7 @@ public:
     vector <Position> snake_body;
     Snake();
 
-    // void set_direction();
-    void set_direction(Map &Map, Snake &snake, Gamemanger &GM);
+    void set_direction();
 
     void move();
     void eat_growth(const Position item);

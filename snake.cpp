@@ -18,45 +18,13 @@ Snake::Snake() {
     direction = 'r'; // default direction
 }
 
-// void Snake::set_direction() // set direction from keyboard
-// {
-//     static const auto tickDuration = std::chrono::milliseconds(1000);
-//     std::this_thread::sleep_for(tickDuration);
-//     while (true) {
-//         int ch = getch();
-//         if (ch == ERR) break;
-//         switch (ch) {
-//         case 'q':
-//             quit=true;
-//             break;
-//         case KEY_LEFT:
-//             direction = 'l';
-//             break;
-//         case KEY_RIGHT:
-//             direction = 'r';
-//             break;
-//         case KEY_UP:
-//             direction = 'u';
-//             break;
-//         case KEY_DOWN:
-//             direction = 'd';
-//             break;
-//         }
-//     }
-// }
-
-void Snake::set_direction(Map &Map, Snake &snake, Gamemanger &GM) // set direction from keyboard
+void Snake::set_direction() // set direction from keyboard
 {
-    GM.display_debug(Map,snake,true,"start");
-    static const auto tickDuration = std::chrono::milliseconds(1000);
+    static const auto tickDuration = std::chrono::milliseconds(300);
     std::this_thread::sleep_for(tickDuration);
-    GM.display_debug(Map,snake,true,"end");
     while (true) {
-        GM.display_debug(Map,snake,true,"loop1");
         int ch = getch();
-        GM.display_debug(Map,snake,true,"loop2");
         if (ch == ERR) break;
-        GM.display_debug(Map,snake,true,"loop3");
         switch (ch) {
         case 'q':
             quit=true;
@@ -74,7 +42,6 @@ void Snake::set_direction(Map &Map, Snake &snake, Gamemanger &GM) // set directi
             direction = 'd';
             break;
         }
-        GM.display_debug(Map,snake,true,"loop4");
     }
 }
 
