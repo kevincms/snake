@@ -4,7 +4,6 @@
 #include <chrono>
 #include <thread>
 #include "snake.h"
-// #include "Map.h"
 
 using namespace std;
 
@@ -27,7 +26,7 @@ void Snake::set_direction() // set direction from keyboard
         if (ch == ERR) break;
         switch (ch) {
         case 'q':
-            quit=true;
+            quit = true;
             break;
         case KEY_LEFT:
             direction = 'l';
@@ -60,10 +59,10 @@ void Snake::move()
         snake_body[0].x++;
         break;
     case 'u':
-        snake_body[0].y++;
+        snake_body[0].y--;
         break;
     case 'd':
-        snake_body[0].y--;
+        snake_body[0].y++;
         break;
     }
 }
@@ -84,7 +83,7 @@ void Snake::eat_poison(const Position item) // �� ������ ���
     }
 }
 
-bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // ����Ʈ ���������? �Ǻ� + �̵�
+bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // ����Ʈ ��������� �Ǻ� + �̵�
 {
     bool in_gate1{ false }, in_gate2{ false };
 
@@ -113,11 +112,11 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                     break;
                 }
                 else if (gate2.u) {
-                    snake_body[i].y++;
+                    snake_body[i].y--;
                     break;
                 }
                 else if (gate2.l) {
-                    snake_body[i].x--;
+                    snake_body[i].x++;
                     break;
                 }
             }
@@ -127,11 +126,11 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                     break;
                 }
                 else if (gate2.u) {
-                    snake_body[i].y++;
+                    snake_body[i].y--;
                     break;
                 }
                 else if (gate2.d) {
-                    snake_body[i].y--;
+                    snake_body[i].y++;
                     break;
                 }
                 else if (gate2.r) {
@@ -141,7 +140,7 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
             }
             else if (direction == 'u') { // when direction up
                 if (gate2.u) {
-                    snake_body[i].y++;
+                    snake_body[i].y--;
                     break;
                 }
                 else if (gate2.r) {
@@ -153,13 +152,13 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                     break;
                 }
                 else if (gate2.d) {
-                    snake_body[i].y--;
+                    snake_body[i].y++;
                     break;
                 }
             }
             else if (direction == 'd') { // when direction down
                 if (gate2.d) {
-                    snake_body[i].y--;
+                    snake_body[i].y++;
                     break;
                 }
                 else if (gate2.l) {
@@ -171,7 +170,7 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                     break;
                 }
                 else if (gate2.u) {
-                    snake_body[i].y++;
+                    snake_body[i].y--;
                     break;
                 }
             }
@@ -184,11 +183,11 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                     break;
                 }
                 else if (gate1.d) {
-                    snake_body[i].y--;
+                    snake_body[i].y++;
                     break;
                 }
                 else if (gate1.u) {
-                    snake_body[i].y++;
+                    snake_body[i].y--;
                     break;
                 }
                 else if (gate1.l) {
@@ -202,11 +201,11 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                     break;
                 }
                 else if (gate1.u) {
-                    snake_body[i].y++;
+                    snake_body[i].y--;
                     break;
                 }
                 else if (gate1.d) {
-                    snake_body[i].y--;
+                    snake_body[i].y++;
                     break;
                 }
                 else if (gate1.r) {
@@ -216,7 +215,7 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
             }
             else if (direction == 'u') { // when direction up
                 if (gate1.u) {
-                    snake_body[i].y++;
+                    snake_body[i].y--;
                     break;
                 }
                 else if (gate1.r) {
@@ -228,13 +227,13 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                     break;
                 }
                 else if (gate1.d) {
-                    snake_body[i].y--;
+                    snake_body[i].y++;
                     break;
                 }
             }
             else if (direction == 'd') { // when direction down
                 if (gate1.d) {
-                    snake_body[i].y--;
+                    snake_body[i].y++;
                     break;
                 }
                 else if (gate1.l) {
@@ -246,7 +245,7 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                     break;
                 }
                 else if (gate1.u) {
-                    snake_body[i].y++;
+                    snake_body[i].y--;
                     break;
                 }
             }
