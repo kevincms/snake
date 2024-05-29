@@ -2,23 +2,20 @@
 #include <curses.h>
 #include <chrono>
 #include <thread>
-#include "Map.h"
-#include "Gamemanger.h"
+#include "map.h"
 
 using namespace std;
 
 class Snake {
 private:
-    Position prev; // ������ �̵��� �־��� ��ǥ
+    Position prev_tail; // ������ �̵��� �־��� ��ǥ
     char direction; // ����
-    int cnt_growth, cnt_poison, cnt_gate;
+    int cnt_growth, cnt_poison, cnt_gate, use_gate;
 public:
-    bool quit=false;
+    bool quit = false;
     vector <Position> snake_body;
     Snake();
-
     void set_direction();
-
     void move();
     void eat_growth(const Position item);
     void eat_poison(const Position item);
