@@ -105,7 +105,7 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
         if (direction == 'r') { // when direction right
             if (gate2.r) snake_body[0].x++;
             else if (gate2.d) {
-                snake_body[0].y--;
+                snake_body[0].y++;
                 direction = 'd';
             }
             else if (gate2.u) {
@@ -113,7 +113,7 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
                 direction = 'u';
             }
             else if (gate2.l) {
-                snake_body[0].x++;
+                snake_body[0].x--;
                 direction = 'l';
             }
         }
