@@ -231,12 +231,10 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
 
     if ((use_gate != -1) && (use_gate != snake_body.size())) {
         use_gate++;
-        cout << use_gate << " ";
         return true;
     }
     else {
         use_gate = -1;
-        cout << use_gate << " ";
         return false;
     }
 }
