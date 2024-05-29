@@ -42,25 +42,25 @@ void Map::reset_map(int stage){
         map[map_size-1][map_size-1]=2;
     }
     else if(stage==1){
-        reset_map();
+        reset_map(stage-1);
         for (size_t i = 0; i < wall; i++){
             map[start+i][wall-half-1]=1;
         }
     }
     else if(stage==2){
-        reset_map(1);
+        reset_map(stage-1);
         for (size_t i = 0; i < wall; i++){
             map[start+i][wall+half-1]=1;
         }
     }
     else if(stage==3){
-        reset_map(2);
+        reset_map(stage-1);
         for (size_t i = 0; i < wall; i++){
             map[wall-half-1][start+i]=1;
         }
     }
     else if(stage==4){
-        reset_map(3);
+        reset_map(stage-1);
         for (size_t i = 0; i < wall; i++){
             map[wall+half-1][start+i]=1;
         }
@@ -100,7 +100,7 @@ Position Map::create_grow_item(){
     Position grow_item;
     grow_item.x=dis(gen);
     grow_item.y=dis(gen);
-    while (map[grow_item.x][grow_item.y]!=0){
+    while (map[grow_item.y][grow_item.x]!=0){
         temp=++grow_item.x/map_size;
         grow_item.x=(grow_item.x)%(map_size);
         grow_item.y=(grow_item.y+temp)%(map_size);
@@ -114,7 +114,7 @@ Position Map::create_poison_item(){
     Position poison_item;
     poison_item.x=dis(gen);
     poison_item.y=dis(gen);
-    while (map[poison_item.x][poison_item.y]!=0){
+    while (map[poison_item.y][poison_item.x]!=0){
         temp=++poison_item.x/map_size;
         poison_item.x=(poison_item.x)%(map_size);
         poison_item.y=(poison_item.y+temp)%(map_size);
@@ -130,7 +130,7 @@ Gate_Position Map::create_gate(){
     for (int i = 0; i < map_size; i++){
         temp_P.x=i;
         for (int j = 0; j < map_size; j++){
-            if(map[i][j]==1){
+            if(map[j][i]==1){
                 temp_P.y=j;
                 gates.push_back(temp_P);
             }
@@ -158,19 +158,19 @@ Gate_Position Map::reset_gate_direction(Gate_Position gate){
 Gate_Position Map::find_gate_direction(Gate_Position gate){
     // 정면
     gate=reset_gate_direction(gate);
-    if (check_map_Pos(gate.x,gate.y+1) && map[gate.x][gate.y+1]==0){
+    if (check_map_Pos(gate.x,gate.y+1) && (map[gate.x][gate.y+1]==0 || map[gate.x][gate.y+1]==10 || map[gate.x][gate.y+1]==11)){
         gate.d=true;
         gate.gate_d[1]=true;
     }
-    if (check_map_Pos(gate.x,gate.y-1) && map[gate.x][gate.y-1]==0){
+    if (check_map_Pos(gate.x,gate.y-1) && (map[gate.x][gate.y-1]==0 || map[gate.x][gate.y-1]==10 || map[gate.x][gate.y-1]==11)){
         gate.u=true;
         gate.gate_d[0]=true;
     }
-    if (check_map_Pos(gate.x+1,gate.y) && map[gate.x+1][gate.y]==0){
+    if (check_map_Pos(gate.x+1,gate.y) && (map[gate.x+1][gate.y]==0 || map[gate.x+1][gate.y]==10 || map[gate.x+1][gate.y]==11)){
         gate.r=true;
         gate.gate_d[2]=true;
     }
-    if (check_map_Pos(gate.x-1,gate.y) && map[gate.x-1][gate.y]==0){
+    if (check_map_Pos(gate.x-1,gate.y) && (map[gate.x-1][gate.y]==0 || map[gate.x-1][gate.y]==10 || map[gate.x-1][gate.y]==11)){
         gate.l=true;
         gate.gate_d[3]=true;
     }

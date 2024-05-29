@@ -2,6 +2,7 @@
 #include <curses.h>
 #include <string>
 #include <vector>
+#include <chrono>
 #include "Gamemanger.h"
 #include "snake.h"
 
@@ -9,14 +10,24 @@ using namespace std;
 
 Gamemanger::Gamemanger(){
     initial_setting();
-    mission_by_stage(true);
+    reset_mission_by_stage();
+    // reset_mission_by_stage(true);
 }
 
 Gamemanger::~Gamemanger(){
     
 }
 
-void Gamemanger::mission_by_stage(bool test){
+void Gamemanger::get_game_start_time(){
+    start=chrono::system_clock::now();
+}
+
+double Gamemanger::get_game_progress_time(){
+    chrono::duration<double>sec = chrono::system_clock::now() - start;
+    return sec.count();
+}
+
+void Gamemanger::reset_mission_by_stage(bool test){
     if(test){
         mission_board.B=3;
         score_board.Max_len=mission_board.B;
@@ -57,7 +68,7 @@ void Gamemanger::mission_by_stage(bool test){
             mission_board.gate_count=5;
         }
     }
-    
+    for (size_t i = 0; i < 4; i++) mission_board.check_string[i]="X";
     score_board.Current_len=3;
 }
 
@@ -120,6 +131,52 @@ bool Gamemanger::is_gameover(Map &Map, Snake &snake){
     return false;
 }
 
+bool Gamemanger::can_create_grow_item(){
+    int time=(int)get_game_progress_time();
+    int count=time/15;
+    time=time%15;
+    if(3<=time && time<=12 && count != grow_create_count){
+        grow_create_count=count;
+        return true;
+    }
+    return false;
+}
+
+bool Gamemanger::can_create_poison_item(){
+    int time=(int)get_game_progress_time();
+    int count=time/15;
+    time=time%15;
+    if(3<=time && time<=12 && count != poison_create_count){
+        poison_create_count=count;
+        return true;
+    }
+    return false;
+}
+
+bool Gamemanger::can_create_gate(){
+    int time=(int)get_game_progress_time();
+    time=time%10;
+    if(2<=time && time<=9) return true;
+    return false;
+}
+
+bool Gamemanger::can_delete_item(){
+    int time=(int)get_game_progress_time();
+    time=time%15;
+    if(3<=time && time<=12){
+        return false;
+    }
+    return true;
+}
+
+bool Gamemanger::can_delete_gate(Snake snake, Gate_Position gate1, Gate_Position gate2){
+    int time=(int)get_game_progress_time();
+    time=time%10;
+    if(2<=time && time<=9) return false;
+    if(snake.go_gate(gate1,gate2)) return false;
+    return true;
+}
+
 bool Gamemanger::is_eat_grow_item(Position grow, Snake &snake){
     Position head;
     head=snake.snake_body[0];
@@ -136,18 +193,39 @@ bool Gamemanger::is_eat_poison_item(Position poison, Snake &snake){
     else return false;
 }
 
+void Gamemanger::update_score_board(bool grow, bool poison, bool gate){
+    if(grow){
+        score_board.Current_len++;
+        score_board.plus++;
+    }
+    else if(poison){
+        score_board.Current_len--;
+        score_board.minus++;
+    }
+    else if(gate) score_board.gate_count++;
+}
+void Gamemanger::reset_score_board(){
+    score_board.Current_len=3;
+    score_board.Max_len=0;
+    score_board.plus=0;
+    score_board.minus=0;
+    score_board.gate_count=0;
+    grow_create_count=-1;
+    poison_create_count=-1;
+}
+
 void Gamemanger::check_misson(){
-    if(score_board.Max_len>=mission_board.B) mission_board.check_string[0]="O";
+    if(score_board.Current_len>=mission_board.B) mission_board.check_string[0]="O";
     else mission_board.check_string[0]="X";
 
     if(score_board.plus>=mission_board.plus) mission_board.check_string[1]="O";
-    else mission_board.check_string[0]="X";
+    else mission_board.check_string[1]="X";
 
-    if(score_board.minus>=mission_board.minus) mission_board.check_string[0]="O";
-    else mission_board.check_string[0]="X";
+    if(score_board.minus>=mission_board.minus) mission_board.check_string[2]="O";
+    else mission_board.check_string[2]="X";
 
-    if(score_board.gate_count>=mission_board.gate_count) mission_board.check_string[0]="O";
-    else mission_board.check_string[0]="X";
+    if(score_board.gate_count>=mission_board.gate_count) mission_board.check_string[3]="O";
+    else mission_board.check_string[3]="X";
 }
 
 void Gamemanger::display(Map &Map){
