@@ -19,6 +19,7 @@ public:
     void move();
     void eat_growth(const Position item);
     void eat_poison(const Position item);
+    void reset();
     bool go_gate(const Gate_Position gate1, const Gate_Position gate2);
     char get_direction();
     int get_cnt_growth() const;

@@ -241,6 +241,16 @@ bool Snake::go_gate(const Gate_Position gate1, const Gate_Position gate2) // �
     }
 }
 
+void Snake::reset() {
+    cnt_growth = 0;
+    cnt_poison = 0;
+    cnt_gate = 0;
+    use_gate = -1;
+    prev_tail = { 0, 0 };
+    snake_body = { {11,11}, {10,11}, {9,11} };
+    direction = 'r'; // default direction
+}
+
 char Snake::get_direction() {
     return direction;
 }
