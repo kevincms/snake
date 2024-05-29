@@ -2,7 +2,7 @@
 #include <curses.h>
 #include <chrono>
 #include <thread>
-#include "map.h"
+#include "Map.h"
 
 using namespace std;
 
