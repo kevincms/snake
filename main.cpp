@@ -34,7 +34,7 @@ int main(){
     Map.snake_to_map(snake);
     GM.display(Map);
     GM.display_debug(Map,snake);
-    getch(); // 아무키 입력시 게임 시작
+    while (getch()==ERR) // 아무키 입력시 게임 시작
     GM.get_game_start_time();
     while(!snake.quit){
         // 0.3초 동안 방향키 입력받기. 입력이 여러 개일 경우 마지막 입력 사용. 아무 입력이 없으면 기존 방향대로. 처음 방향은 ->
@@ -100,7 +100,7 @@ int main(){
             snake.reset();
             Map.snake_to_map(snake);
             GM.display(Map);
-            getch();
+            while (getch()==ERR)
             existence_grow_item=false;
             existence_poison_item=false;
             existence_gate=false;
