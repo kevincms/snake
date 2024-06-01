@@ -20,7 +20,7 @@ Snake::Snake() {
 
 void Snake::set_direction() // set direction from keyboard
 {
-    static const auto tickDuration = std::chrono::milliseconds(300);
+    static const auto tickDuration = std::chrono::milliseconds(tick_time);
     std::this_thread::sleep_for(tickDuration);
     while (true) {
         int ch = getch();

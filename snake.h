@@ -12,6 +12,7 @@ private:
     char direction; // ����
     int cnt_growth, cnt_poison, cnt_gate, use_gate;
 public:
+    int tick_time{300};
     bool quit = false;
     vector <Position> snake_body;
     Snake();

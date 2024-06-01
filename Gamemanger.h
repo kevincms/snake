@@ -21,7 +21,7 @@ class Snake;
 class Gamemanger
 {
 private:
-    int grow_create_count{-1}, poison_create_count{-1};
+    int grow_create_count{-1}, poison_create_count{-1}, special_create_count{-1};
 public:
     int stage=0;
     Score_Board score_board;
@@ -38,13 +38,13 @@ public:
 
     bool can_create_grow_item();
     bool can_create_poison_item();
+    bool can_create_special_item();
     bool can_create_gate();
 
     bool can_delete_item();
     bool can_delete_gate(Snake snake, Gate_Position gate1, Gate_Position gate2);
 
-    bool is_eat_grow_item(Position grow, Snake &snake);
-    bool is_eat_poison_item(Position poison, Snake &snake);
+    bool is_eat_item(Position item, Snake &snake);
     void update_score_board(bool grow=false, bool poison=false, bool gate=false);
     void reset_score_board();
 
