@@ -7,15 +7,16 @@
 using namespace std;
 
 int main(){
+    // 아이템 하나 늘리는 거 3개 2제한
     initscr(); // 시작
     
     Map Map;
     Gamemanger GM;
     Snake snake;
-    Position grow, poison;
+    Position grow, poison, special;
     Gate_Position gate1, gate2;
     string temp_debug;
-    bool existence_grow_item{0}, existence_poison_item{0}, existence_gate{0};
+    bool existence_grow_item{0}, existence_poison_item{0}, existence_special_item{0}, existence_gate{0};
     bool use_gate_start{1};
 
     // 바로 아이템 생성
@@ -33,7 +34,7 @@ int main(){
 
     Map.snake_to_map(snake);
     GM.display(Map);
-    GM.display_debug(Map,snake);
+    // GM.display_debug(Map,snake);
     while (getch()==ERR) // 아무키 입력시 게임 시작
     GM.get_game_start_time();
     while(!snake.quit){
@@ -41,21 +42,26 @@ int main(){
         snake.set_direction();
         snake.move(); // 입력받은 방향대로 이동
 
-        // snake head가 벽을 만나거나 snake 몸체를 만나면 종료
-        if(GM.is_gameover(Map,snake)) break;
         // 아이템 생성
         if(GM.can_create_grow_item()){
             if(!existence_grow_item){
-                grow=Map.create_grow_item();
+                grow=Map.create_item();
                 Map.grow_item_to_map(grow);
                 existence_grow_item=true;
             }
         }
         if(GM.can_create_poison_item()){
             if(!existence_poison_item){
-                poison=Map.create_poison_item();
+                poison=Map.create_item();
                 Map.poison_item_to_map(poison);
                 existence_poison_item=true;
+            }
+        }
+        if(GM.can_create_special_item()){
+            if(!existence_special_item){
+                special=Map.create_item();
+                Map.special_item_to_map(special);
+                existence_special_item=true;
             }
         }
         // gate 생성
@@ -72,13 +78,21 @@ int main(){
         }
 
         // 아이템 획득 시 action
-        if(GM.is_eat_grow_item(grow,snake)){
-            snake.eat_growth(grow);
+        if(GM.is_eat_item(grow,snake)){
+            if(GM.score_board.Current_len!=GM.score_board.Max_len) snake.eat_growth(grow);
             GM.update_score_board(true,false,false);
         }
-        if(GM.is_eat_poison_item(poison,snake)){
+        if(GM.is_eat_item(poison,snake)){
             snake.eat_poison(poison);
             GM.update_score_board(false,true,false);
+        }
+        if(GM.is_eat_item(special,snake)){
+            if(GM.score_board.Current_len!=GM.score_board.Max_len) snake.eat_growth(special);
+            GM.update_score_board(true,false,false);
+            if(snake.tick_time>=60){
+                snake.tick_time=snake.tick_time-30;
+                GM.tick_time=snake.tick_time;
+            }
         }
         // gate 통과 시 action
         if(existence_gate){
@@ -90,9 +104,14 @@ int main(){
 
         }
 
+        // snake head가 벽, snake 몸체을 만나거나 길이가 2아래면 종료
+        if(GM.is_gameover(Map,snake)) break;
+
         // 스테이지 클리어시 다음 스테이지로
         if(GM.is_stage_clear()){
             GM.stage++;
+            snake.tick_time=300-(40*GM.stage);
+            GM.tick_time=snake.tick_time;
             if(GM.stage==5) break;
             Map.reset_map(GM.stage);
             GM.reset_score_board();
@@ -103,6 +122,7 @@ int main(){
             while (getch()==ERR)
             existence_grow_item=false;
             existence_poison_item=false;
+            existence_special_item=false;
             existence_gate=false;
             use_gate_start=true;
             GM.get_game_start_time();
@@ -113,13 +133,17 @@ int main(){
         Map.reset_map(GM.stage);
         Map.snake_to_map(snake);
 
-        // if(GM.is_eat_grow_item(grow,snake)) grow=Map.create_grow_item(); // item 먹자마자 바로 생성
-        if(GM.is_eat_grow_item(grow,snake) || GM.can_delete_item()) existence_grow_item=false;
+        // if(GM.is_eat_item(grow,snake)) grow=Map.create_item(); // item 먹자마자 바로 생성
+        if(GM.is_eat_item(grow,snake) || GM.can_delete_item()) existence_grow_item=false;
         if(existence_grow_item) Map.grow_item_to_map(grow);
 
-        // if(GM.is_eat_poison_item(poison,snake) poison=Map.create_poison_item(); // item 먹자마자 바로 생성
-        if(GM.is_eat_poison_item(poison,snake) || GM.can_delete_item()) existence_poison_item=false;
+        // if(GM.is_eat_item(poison,snake) poison=Map.create_item(); // item 먹자마자 바로 생성
+        if(GM.is_eat_item(poison,snake) || GM.can_delete_item()) existence_poison_item=false;
         if(existence_poison_item) Map.poison_item_to_map(poison);
+
+        if(GM.is_eat_item(special,snake) || GM.can_delete_item()) existence_special_item=false;
+        if(existence_special_item) Map.special_item_to_map(special);
+        
         if(GM.can_delete_gate(snake,gate1,gate2)){
             use_gate_start=true;
             existence_gate=false;
@@ -132,10 +156,10 @@ int main(){
         // 출력하기
         GM.display(Map);
         // temp_debug="gate1 : "+to_string(gate1.u)+" "+to_string(gate1.d)+" "+to_string(gate1.r)+" "+to_string(gate1.l)+", gate2 : "+to_string(gate2.u)+" "+to_string(gate2.d)+" "+to_string(gate2.r)+" "+to_string(gate2.l);
-        temp_debug=to_string(GM.get_game_progress_time());
+        // temp_debug=to_string(GM.get_game_progress_time());
         // temp_debug=to_string(GM.mission_board.B)+" "+to_string(GM.score_board.Current_len)+" "+to_string(GM.score_board.Max_len)+" "+GM.mission_board.check_string[0]+GM.mission_board.check_string[1]+GM.mission_board.check_string[2]+GM.mission_board.check_string[3];
         // temp_debug=to_string(snake.go_gate(gate1,gate2))+" "+to_string(existence_gate)+" "+to_string(GM.can_create_gate());
-        GM.display_debug(Map,snake,true,temp_debug);
+        // GM.display_debug(Map,snake,true,temp_debug);
     }
     
     endwin(); // 끝

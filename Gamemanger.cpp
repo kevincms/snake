@@ -239,7 +239,6 @@ void Gamemanger::display(Map &Map){
     display_score(Map);
     check_misson();
     display_misssion(Map);
-    
 }
 
 void Gamemanger::display_debug(Map &Map, Snake &snake, bool check, string test_string){
@@ -279,12 +278,13 @@ void Gamemanger::display_score(Map &Map){
     // newwin(height, width, y, x); x y 좌표에 window 생성
     WINDOW *win=newwin(Map.map_size/2,Map.map_size,0,Map.map_size+1);
     
-    vector<string> score_string={"Score Board","B : ","+ : ","- : ","G : ","Time : "};
+    vector<string> score_string={"Score Board","B : ","+ : ","- : ","G : ","Speed : ","Time : "};
     score_string[1]+="("+to_string(score_board.Current_len)+") / ("+to_string(score_board.Max_len)+")";
     score_string[2]+="("+to_string(score_board.plus)+")";
     score_string[3]+="("+to_string(score_board.minus)+")";
     score_string[4]+="("+to_string(score_board.gate_count)+")";
-    score_string[5]+=to_string((int)get_game_progress_time())+" sec";
+    score_string[5]+=to_string((float)300/tick_time);
+    score_string[6]+=to_string((int)get_game_progress_time())+" sec";
     // mvwprintw(win,y,x)
     for (size_t i = 0; i < score_string.size(); i++){
         mvwprintw(win, 2+i, 2, score_string[i].c_str());

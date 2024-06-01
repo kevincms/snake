@@ -23,6 +23,7 @@ class Gamemanger
 private:
     int grow_create_count{-1}, poison_create_count{-1}, special_create_count{-1};
 public:
+    int tick_time{300};
     int stage=0;
     Score_Board score_board;
     Mission_Board mission_board;
